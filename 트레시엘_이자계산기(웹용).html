@@ -1,0 +1,246 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="UTF-8">
+	<title>Insert title here</title>
+	<style>
+		table.custom-table {
+		  border-collapse: separate;
+		  border-spacing: 1px;
+		  text-align: left;
+		  line-height: 1.5;
+		  border-top: 1px solid #ccc;
+		  margin: 20px 10px;
+		}
+		table.custom-table th {
+		  width: 150px;
+		  padding: 10px;
+		  font-weight: bold;
+		  vertical-align: middle;
+		  text-align: center;
+		  border-bottom: 1px solid #ccc;
+		  background: #efefef;
+		}
+		table.custom-table td {
+		  width: 350px;
+		  padding: 10px;
+		  vertical-align: middle;
+		  border-bottom: 1px solid #ccc;
+		}
+		table td input {
+			display:block; width: 100%; height:calc(1em + 1rem + 2px);
+		}
+
+	</style>
+	<script src="https://code.jquery.com/jquery-3.4.1.min.js" ></script>
+	<script type="text/javascript">
+		$(function(){
+			$('#bsic_inrt').val(4.55);
+			$('#occu_date').val('2025-07-01');
+		});
+
+		function setComma(obj) {
+			let item = String(obj).replace(/[^0-9]/g,'').replace(/,/g,'');
+			return String(item).replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+		}
+
+		function autoComma(obj) {
+			let item = String(obj.value).replace(/[^0-9]/g,'').replace(/,/g,'');
+			obj.value = String(item).replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+		}
+
+		function dateDiff(date1, date2) {  
+			const date1utc = Date.UTC(date1.getFullYear(), date1.getMonth(), date1.getDate());
+			const date2utc = Date.UTC(date2.getFullYear(), date2.getMonth(), date2.getDate());
+			day = 1000 * 60 * 60 * 24;
+			return(date2utc - date1utc) / day
+		}
+
+		function setData() {
+			let amt = 0;
+			let occuDate = '';
+			let bsicInrt = 0;
+			let loanExctDt = ['2022-02-16','2022-09-29','2023-06-16','2024-02-28','2024-08-20','2025-02-18'];
+			let ints = 0;
+			let addInts = 0;
+			let html = ``;
+			let intArr = [];
+			let reduceInts = [];
+
+			if(($('#amt').val() === undefined) || ($('#amt').val() === '')) {
+				alert('분양금액을 입력하세요');
+				$('#amt').focus();
+				return;
+			} else {
+				amt = Number($('#amt').val().replaceAll(",", "")) * 0.1;
+			}
+
+			if(($('#bsic_inrt').val() === undefined) || ($('#bsic_inrt').val() === '')) {
+				alert('예정이율을 입력하세요');
+				$('#bsic_inrt').focus();
+				return;
+			} else {
+				bsicInrt = $('#bsic_inrt').val();
+			}
+
+			if(($('#occu_date').val() === undefined) || ($('#occu_date').val() === '')) {
+				alert('입주날짜를 선택하세요');
+				$('#occu_date').focus();
+				return;
+			} else {
+				occuDate = $('#occu_date').val();
+			}
+
+			$('.content-result .custom-table tbody').empty();
+			
+			html += `<tr>`;
+			html += `	<th>1회차</th>`;
+			html += `	<td style="text-align:center;">` + loanExctDt[0] + `</td>`;
+			html += `	<td style="text-align:right; margin-right:10px;">` + setComma(dateDiff(new Date(loanExctDt[0]), new Date(occuDate)) - 1) + `</td>`;
+			html += `	<td style="text-align:right; margin-right:10px;">` + setComma(amt) + `</td>`;
+			ints = Math.round(amt * (bsicInrt / 100) / 365 * (dateDiff(new Date(loanExctDt[0]), new Date(occuDate)) - 1));
+			intArr.push(ints);
+			addInts += ints;
+			html += `	<td style="text-align:right; margin-right:10px;">` + setComma(ints) + `</td>`;
+			html += `	<td style="text-align:right; margin-right:10px;">` + setComma(addInts) + `</td>`;
+			html += `</tr>`;
+			html += `<tr>`;
+			html += `	<th>2회차</th>`;
+			html += `	<td style="text-align:center;">` + loanExctDt[1] + `</td>`;
+			html += `	<td style="text-align:right; margin-right:10px;">` + setComma(dateDiff(new Date(loanExctDt[1]), new Date(occuDate)) - 1) + `</td>`;
+			html += `	<td style="text-align:right; margin-right:10px;">` + setComma(amt) + `</td>`;
+			ints = Math.round(amt * (bsicInrt / 100) / 365 * (dateDiff(new Date(loanExctDt[1]), new Date(occuDate)) - 1));
+			intArr.push(ints);
+			addInts += ints;
+			html += `	<td style="text-align:right; margin-right:10px;">` + setComma(ints) + `</td>`;
+			html += `	<td style="text-align:right; margin-right:10px;">` + setComma(addInts) + `</td>`;
+			html += `</tr>`;
+			html += `<tr>`;
+			html += `	<th>3회차</th>`;
+			html += `	<td style="text-align:center;">` + loanExctDt[2] + `</td>`;
+			html += `	<td style="text-align:right; margin-right:10px;">` + setComma(dateDiff(new Date(loanExctDt[2]), new Date(occuDate)) - 1) + `</td>`;
+			html += `	<td style="text-align:right; margin-right:10px;">` + setComma(amt) + `</td>`;
+			ints = Math.round(amt * (bsicInrt / 100) / 365 * (dateDiff(new Date(loanExctDt[2]), new Date(occuDate)) - 1));
+			intArr.push(ints);
+			addInts += ints;
+			html += `	<td style="text-align:right; margin-right:10px;">` + setComma(ints) + `</td>`;
+			html += `	<td style="text-align:right; margin-right:10px;">` + setComma(addInts) + `</td>`;
+			html += `</tr>`;
+			html += `<tr>`;
+			html += `	<th>4회차</th>`;
+			html += `	<td style="text-align:center;">` + loanExctDt[3] + `</td>`;
+			html += `	<td style="text-align:right; margin-right:10px;">` + setComma(dateDiff(new Date(loanExctDt[3]), new Date(occuDate)) - 1) + `</td>`;
+			html += `	<td style="text-align:right; margin-right:10px;">` + setComma(amt) + `</td>`;
+			ints = Math.round(amt * (bsicInrt / 100) / 365 * (dateDiff(new Date(loanExctDt[3]), new Date(occuDate)) - 1));
+			intArr.push(ints);
+			addInts += ints;
+			html += `	<td style="text-align:right; margin-right:10px;">` + setComma(ints) + `</td>`;
+			html += `	<td style="text-align:right; margin-right:10px;">` + setComma(addInts) + `</td>`;
+			html += `</tr>`;
+			html += `	<th>5회차</th>`;
+			html += `	<td style="text-align:center;">` + loanExctDt[4] + `</td>`;
+			html += `	<td style="text-align:right; margin-right:10px;">` + setComma(dateDiff(new Date(loanExctDt[4]), new Date(occuDate)) - 1) + `</td>`;
+			html += `	<td style="text-align:right; margin-right:10px;">` + setComma(amt) + `</td>`;
+			ints = Math.round(amt * (bsicInrt / 100) / 365 * (dateDiff(new Date(loanExctDt[4]), new Date(occuDate)) - 1));
+			intArr.push(ints);
+			addInts += ints;
+			html += `	<td style="text-align:right; margin-right:10px;">` + setComma(ints) + `</td>`;
+			html += `	<td style="text-align:right; margin-right:10px;">` + setComma(addInts) + `</td>`;
+			html += `</tr>`;
+			html += `	<th>6회차</th>`;
+			html += `	<td style="text-align:center;">` + loanExctDt[5] + `</td>`;
+			html += `	<td style="text-align:right; margin-right:10px;">` + setComma(dateDiff(new Date(loanExctDt[5]), new Date(occuDate)) - 1) + `</td>`;
+			html += `	<td style="text-align:right; margin-right:10px;">` + setComma(amt) + `</td>`;
+			ints = Math.round(amt * (bsicInrt / 100) / 365 * (dateDiff(new Date(loanExctDt[5]), new Date(occuDate)) - 1));
+			intArr.push(ints);
+			addInts += ints;
+			html += `	<td style="text-align:right; margin-right:10px;">` + setComma(ints) + `</td>`;
+			html += `	<td style="text-align:right; margin-right:10px;">` + setComma(addInts) + `</td>`;
+			html += `</tr>`;
+
+			for(let i=0; i<intArr.length; i++) {
+				let addItem = 0;
+				for(let j=0; j<i; j++) {
+					addItem += intArr[j]
+				}
+				reduceInts.push(addInts - addItem);
+			}
+
+			html += `<tr>`;
+			html += `<th colspan="4">1회차 자납시 후불이자</th>`;
+			html += `	<td style="text-align:right; margin-right:10px;">` + setComma(reduceInts[0]) + `</td>`;
+			html += `	<td></td>`;
+			html += `</tr>`;
+			html += `<th colspan="4">2회차까지 자납시 후불이자</th>`;
+			html += `	<td style="text-align:right; margin-right:10px;">` + setComma(reduceInts[1]) + `</td>`;
+			html += `	<td></td>`;
+			html += `</tr>`;
+			html += `<th colspan="4">3회차까지 자납시 후불이자</th>`;
+			html += `	<td style="text-align:right; margin-right:10px;">` + setComma(reduceInts[2]) + `</td>`;
+			html += `	<td></td>`;
+			html += `</tr>`;
+			html += `<th colspan="4">4회차까지 자납시 후불이자</th>`;
+			html += `	<td style="text-align:right; margin-right:10px;">` + setComma(reduceInts[3]) + `</td>`;
+			html += `	<td></td>`;
+			html += `</tr>`;
+			html += `<th colspan="4">5회차까지 자납시 후불이자</th>`;
+			html += `	<td style="text-align:right; margin-right:10px;">` + setComma(reduceInts[4]) + `</td>`;
+			html += `	<td></td>`;
+			html += `</tr>`;
+			html += `<th colspan="4">6회차까지 자납시 후불이자</th>`;
+			html += `	<td style="text-align:right; margin-right:10px;">` + setComma(reduceInts[5]) + `</td>`;
+			html += `	<td></td>`;
+			html += `</tr>`;
+
+			$('.content-result .custom-table tbody').append(html);
+		}
+	</script>
+</head>
+<body>
+	<table class="custom-table">
+		<tbody>
+			<tr>
+				<th>분양금액</th>
+				<td>
+					<input type="text" id="amt" style="text-align:center;" onkeyup="autoComma(this);" />
+				</td>
+			</tr>
+			<tr>
+				<th>예정이율</th>
+				<td>
+					<input type="number" id="bsic_inrt" step="0.01" style="text-align:center;" />
+				</td>
+			</tr>
+			<tr>
+				<th>입주날짜</th>
+				<td>
+					<input type="date" id="occu_date" style="text-align:center;" />
+				</td>
+			</tr>
+		</body>
+	</table>
+	<button style="background:#F79D64; padding:15px; margin-left:10px;" onclick="setData();">예정이자 확인하기</button>
+	<div class="content-result">
+		<table class="custom-table" style="word-wrap:break-word; work-break:break-all;">
+			<thead>
+				<th>회차</th>
+				<th>실행일</th>
+				<th>기간</th>
+				<th>금액</th>
+				<th>이자</th>
+				<th>누계</th>
+			</thead>
+			<tbody>
+				<tr>
+					<td></td>
+					<td></td>
+					<td></td>
+					<td></td>
+					<td></td>
+					<td></td>
+				</tr>
+			</tbody>
+		</table>
+	</div>
+</body>
+</html>
