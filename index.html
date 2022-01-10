@@ -2,7 +2,7 @@
 <html>
 <head>
 	<meta charset="UTF-8">
-	<title>Insert title here</title>
+	<title>트레시엘 중도금 이자 계산</title>
 	<style>
 		table.custom-table {
 		  border-collapse: separate;
@@ -30,7 +30,6 @@
 		table td input {
 			display:block; width: 100%; height:calc(1em + 1rem + 2px);
 		}
-
 	</style>
 	<script src="https://code.jquery.com/jquery-3.4.1.min.js" ></script>
 	<script type="text/javascript">
@@ -91,8 +90,20 @@
 				occuDate = $('#occu_date').val();
 			}
 
-			$('.content-result .custom-table tbody').empty();
+			$('.content-result').empty();
 			
+		
+			html += `<table class="custom-table" style="word-wrap:break-word; work-break:break-all;">`;
+			html += `		<thead>`;
+			html += `				<th>회차</th>`;
+			html += `				<th>실행일</th>`;
+			html += `				<th>기간</th>`;
+			html += `				<th>금액</th>`;
+			html += `				<th>이자</th>`;
+			html += `				<th>누계</th>`;
+			html += `		</thead>`;
+			html += `		<tbody>`;
+
 			html += `<tr>`;
 			html += `	<th>1회차</th>`;
 			html += `	<td style="text-align:center;">` + loanExctDt[0] + `</td>`;
@@ -160,7 +171,7 @@
 
 			for(let i=0; i<intArr.length; i++) {
 				let addItem = 0;
-				for(let j=0; j<i; j++) {
+				for(let j=0; j<=i; j++) {
 					addItem += intArr[j]
 				}
 				reduceInts.push(addInts - addItem);
@@ -191,8 +202,10 @@
 			html += `	<td style="text-align:right; margin-right:10px;">` + setComma(reduceInts[5]) + `</td>`;
 			html += `	<td></td>`;
 			html += `</tr>`;
+			html += `</tbody>`;
+			html += `</table>`;
 
-			$('.content-result .custom-table tbody').append(html);
+			$('.content-result').append(html);
 		}
 	</script>
 </head>
@@ -219,28 +232,9 @@
 			</tr>
 		</body>
 	</table>
-	<button style="background:#F79D64; padding:15px; margin-left:10px;" onclick="setData();">예정이자 확인하기</button>
+	<button style="background:#F79D64; padding:15px; margin-left:10px; font-weight:bold;" onclick="setData();">예정이자 확인하기</button>
 	<div class="content-result">
-		<table class="custom-table" style="word-wrap:break-word; work-break:break-all;">
-			<thead>
-				<th>회차</th>
-				<th>실행일</th>
-				<th>기간</th>
-				<th>금액</th>
-				<th>이자</th>
-				<th>누계</th>
-			</thead>
-			<tbody>
-				<tr>
-					<td></td>
-					<td></td>
-					<td></td>
-					<td></td>
-					<td></td>
-					<td></td>
-				</tr>
-			</tbody>
-		</table>
+		
 	</div>
 </body>
 </html>
